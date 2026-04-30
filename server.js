@@ -1,7 +1,7 @@
 const express = require("express");
 const categoryRoutes = require("./routes/categoryRoutes");
 const authRoutes = require("./routes/authRoutes");
-//const productRoutes = require("./routes/productRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 const PORT = 3000;
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/categories", categoryRoutes);
 app.use("/", authRoutes);
-//app.use("/products", productRoutes);
+app.use("/products", productRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

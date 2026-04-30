@@ -4,7 +4,6 @@ const connection = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
   port: 3306,
-  password: "adminpass123",
   database: "ecommerce_db"
 });
 
