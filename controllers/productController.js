@@ -8,7 +8,7 @@ exports.getAllProducts = (req, res) => {
 
   db.query(sql, (err, result) => {
     if (err) {
-      return res.status(500).json({ message: "Error getting products" });
+      return res.status(500).json({ message: err.message });
     }
 
     res.json(result); 
@@ -71,8 +71,29 @@ exports.updateProduct = (req, res) => {
   const id = req.params.id;
   const { name, price, stock_quantity, category_id } = req.body;
 
+  //ID validation
   if (isNaN(id)) {
     return res.status(400).json({ message: "Invalid ID" });
+  }
+
+  //Body validation
+  if (!name || !price || !category_id) {
+    return res.status(400).json({
+      message: "Name, price and category_id are required"
+    })
+  }
+
+  if (name.length < 3) {
+    return res.status(400).json({
+      message: "Name must be at least 3 characters"
+    })
+  }
+
+  if (isNaN(price) || price <= 0){
+    return res.status(400).json({
+      message: "Price must be a positive"
+    })
+
   }
 
   const sql = `
@@ -115,4 +136,32 @@ exports.deleteProduct = (req, res) => {
 
     res.json({ message: "Product deleted successfully" });
   });
+};
+
+//create image
+exports.createProduct = (req, res) => {
+  const { name, price, stock_quantity, category_id } = req.body;
+
+  if (!name || !price || !category_id) {
+    return res.status(400).json({
+      message: "Name, price and category_id are required"
+    });
+  }
+
+  const image = req.file ? req.file.filename : null;
+
+  db.query(
+    "INSERT INTO products (name, price, stock_quantity, category_id, image) VALUES (?, ?, ?, ?, ?)",
+    [name, price, stock_quantity ?? 0, category_id, image],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: err.message });
+      }
+
+      res.status(201).json({
+        message: "Product created successfully",
+        productId: result.insertId
+      });
+    }
+  );
 };

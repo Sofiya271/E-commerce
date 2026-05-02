@@ -2,7 +2,7 @@ const db = require("../db");
 
 // GET all categories
 exports.getAllCategories = (req, res) => {
-  const sql = "SELECT * FROM categories";
+  const sql = "SELECT categories.* , COUNT(products.id) as product_count FROM categories LEFT JOIN products on categories.id = products.category_id GROUP BY categories.id";
 
   db.query(sql, (err, result) => {
     if (err) {
